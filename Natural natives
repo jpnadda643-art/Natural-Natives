@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Natural Native — AI Education</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --forest: #0d1f0f;
+    --moss: #1a3a1e;
+    --leaf: #3d7a45;
+    --sage: #6ab572;
+    --mint: #a8e0ae;
+    --cream: #f5f0e8;
+    --gold: #d4a853;
+    --glow: #7eff8a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--forest);
+    color: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* === ANIMATED BACKGROUND === */
+  .bg-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .bg-layer::before {
+    content: '';
+    position: absolute;
+    inset: -50%;
+    background: radial-gradient(ellipse 60% 40% at 30% 40%, rgba(61,122,69,0.25) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 60% at 70% 70%, rgba(106,181,114,0.12) 0%, transparent 60%),
+                radial-gradient(ellipse 80% 80% at 50% 50%, rgba(13,31,15,1) 40%, transparent 100%);
+    animation: bgPulse 8s ease-in-out infinite alternate;
+  }
+
+  @keyframes bgPulse {
+    0%   { transform: scale(1) rotate(0deg); }
+    100% { transform: scale(1.1) rotate(3deg); }
+  }
+
+  /* Floating particles */
+  .particles {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .particle {
+    position: absolute;
+    border-radius: 50%;
+    background: var(--glow);
+    opacity: 0;
+    animation: floatUp var(--dur, 8s) var(--delay, 0s) infinite ease-in-out;
+  }
+
+  @keyframes floatUp {
+    0%   { transform: translateY(100vh) scale(0); opacity: 0; }
+    10%  { opacity: 0.4; }
+    90%  { opacity: 0.1; }
+    100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+  }
+
+  /* === MAIN LAYOUT === */
+  .site-wrapper {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* === HERO SECTION === */
+  .hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 60px 20px;
+    text-align: center;
+  }
+
+  /* Logo Mark */
+  .logo-mark {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    margin-bottom: 40px;
+    animation: logoEntrance 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  @keyframes logoEntrance {
+    0%   { transform: scale(0) rotate(-180deg); opacity: 0; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  }
+
+  .logo-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px solid var(--sage);
+    animation: spinRing 20s linear infinite;
+  }
+
+  .logo-ring::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 8px;
+    height: 8px;
+    background: var(--glow);
+    border-radius: 50%;
+    box-shadow: 0 0 12px var(--glow);
+  }
+
+  .logo-ring-2 {
+    inset: 12px;
+    border-color: rgba(106,181,114,0.4);
+    animation: spinRing 14s linear infinite reverse;
+  }
+
+  @keyframes spinRing {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+
+  .logo-core {
+    position: absolute;
+    inset: 28px;
+    background: radial-gradient(circle at 40% 35%, var(--moss), var(--forest));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(106,181,114,0.3);
+    box-shadow: 0 0 40px rgba(126,255,138,0.15), inset 0 0 30px rgba(0,0,0,0.5);
+  }
+
+  .logo-leaf-svg {
+    width: 52px;
+    height: 52px;
+    filter: drop-shadow(0 0 8px rgba(126,255,138,0.6));
+    animation: leafBreath 3s ease-in-out infinite alternate;
+  }
+
+  @keyframes leafBreath {
+    0%   { transform: scale(1); filter: drop-shadow(0 0 6px rgba(126,255,138,0.5)); }
+    100% { transform: scale(1.08); filter: drop-shadow(0 0 14px rgba(126,255,138,0.9)); }
+  }
+
+  /* Channel Name */
+  .channel-name {
+    animation: fadeUp 1s 0.4s both;
+  }
+
+  @keyframes fadeUp {
+    0%   { transform: translateY(30px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+  }
+
+  .name-natural {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(52px, 10vw, 96px);
+    font-weight: 900;
+    color: var(--cream);
+    letter-spacing: -2px;
+    line-height: 0.9;
+    display: block;
+  }
+
+  .name-native {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(52px, 10vw, 96px);
+    font-weight: 400;
+    font-style: italic;
+    color: var(--sage);
+    letter-spacing: -1px;
+    line-height: 0.9;
+    display: block;
+    position: relative;
+  }
+
+  .name-native::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--sage), var(--glow));
+    animation: lineGrow 1.2s 1.2s forwards;
+  }
+
+  @keyframes lineGrow {
+    to { width: 100%; }
+  }
+
+  .tagline {
+    font-family: 'Space Mono', monospace;
+    font-size: clamp(11px, 1.5vw, 13px);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-top: 28px;
+    animation: fadeUp 1s 0.8s both;
+  }
+
+  .tagline span {
+    color: rgba(245,240,232,0.4);
+    margin: 0 8px;
+  }
+
+  /* === MOTION VIDEO BANNER === */
+  .motion-banner {
+    width: 100%;
+    max-width: 900px;
+    margin: 60px 20px;
+    padding: 0 20px;
+    animation: fadeUp 1s 1s both;
+  }
+
+  .video-frame {
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: var(--moss);
+    border-radius: 16px;
+    border: 1px solid rgba(106,181,114,0.2);
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(106,181,114,0.1);
+  }
+
+  /* Animated Video Mockup */
+  .video-bg {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--forest) 0%, var(--moss) 50%, #0a1a0c 100%);
+    overflow: hidden;
+  }
+
+  .scan-line {
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--sage), var(--glow), var(--sage), transparent);
+    opacity: 0.6;
+    animation: scan 3s ease-in-out infinite;
+  }
+
+  @keyframes scan {
+    0%   { top: -2px; opacity: 0; }
+    10%  { opacity: 0.6; }
+    90%  { opacity: 0.6; }
+    100% { top: 100%; opacity: 0; }
+  }
+
+  .video-content {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  .video-logo-mini {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 5vw, 56px);
+    font-weight: 900;
+    color: var(--cream);
+    text-shadow: 0 0 30px rgba(106,181,114,0.5);
+    animation: videoPulse 2s ease-in-out infinite alternate;
+  }
+
+  .video-logo-mini em {
+    font-style: italic;
+    color: var(--sage);
+  }
+
+  @keyframes videoPulse {
+    0%   { text-shadow: 0 0 20px rgba(106,181,114,0.4); }
+    100% { text-shadow: 0 0 50px rgba(126,255,138,0.7), 0 0 100px rgba(106,181,114,0.3); }
+  }
+
+  .video-subtitle {
+    font-family: 'Space Mono', monospace;
+    font-size: clamp(9px, 1.5vw, 12px);
+    letter-spacing: 6px;
+    color: var(--gold);
+    text-transform: uppercase;
+    animation: blink 1.8s step-end infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.3; }
+  }
+
+  /* Floating AI icons in video */
+  .float-icon {
+    position: absolute;
+    font-size: 20px;
+    opacity: 0;
+    animation: floatIcon var(--fi-dur, 4s) var(--fi-delay, 0s) infinite ease-in-out;
+  }
+
+  @keyframes floatIcon {
+    0%   { opacity: 0; transform: translateY(0) scale(0.5); }
+    30%  { opacity: 0.5; }
+    70%  { opacity: 0.5; }
+    100% { opacity: 0; transform: translateY(-60px) scale(1); }
+  }
+
+  /* Play button overlay */
+  .play-btn {
+    position: absolute;
+    bottom: 24px;
+    right: 24px;
+    width: 52px;
+    height: 52px;
+    background: rgba(106,181,114,0.15);
+    border: 1px solid var(--sage);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+    animation: playPulse 2s ease-in-out infinite;
+  }
+
+  .play-btn:hover {
+    background: var(--sage);
+    transform: scale(1.1);
+  }
+
+  @keyframes playPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(106,181,114,0.4); }
+    50%       { box-shadow: 0 0 0 12px rgba(106,181,114,0); }
+  }
+
+  .play-btn::after {
+    content: '';
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-left: 16px solid var(--sage);
+    margin-left: 4px;
+  }
+
+  .play-btn:hover::after {
+    border-left-color: var(--forest);
+  }
+
+  /* Video label */
+  .video-label {
+    position: absolute;
+    top: 20px;
+    left: 24px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .rec-dot {
+    width: 8px;
+    height: 8px;
+    background: #ff4444;
+    border-radius: 50%;
+    animation: recPulse 1s ease-in-out infinite alternate;
+  }
+
+  @keyframes recPulse {
+    0%   { opacity: 1; box-shadow: 0 0 6px #ff4444; }
+    100% { opacity: 0.5; box-shadow: 0 0 2px #ff4444; }
+  }
+
+  .rec-text {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: rgba(245,240,232,0.6);
+  }
+
+  /* === FEATURE CARDS === */
+  .features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+    max-width: 900px;
+    width: 100%;
+    padding: 0 20px 80px;
+    animation: fadeUp 1s 1.2s both;
+  }
+
+  .card {
+    background: rgba(26,58,30,0.4);
+    border: 1px solid rgba(106,181,114,0.15);
+    border-radius: 16px;
+    padding: 28px 24px;
+    backdrop-filter: blur(12px);
+    transition: all 0.3s ease;
+    cursor: default;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(106,181,114,0.08), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .card:hover {
+    border-color: rgba(106,181,114,0.4);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  }
+
+  .card:hover::before { opacity: 1; }
+
+  .card-icon {
+    font-size: 32px;
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--cream);
+    margin-bottom: 8px;
+  }
+
+  .card-desc {
+    font-size: 13px;
+    line-height: 1.7;
+    color: rgba(245,240,232,0.55);
+  }
+
+  .card-tag {
+    display: inline-block;
+    margin-top: 14px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    background: rgba(106,181,114,0.12);
+    border: 1px solid rgba(106,181,114,0.25);
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--sage);
+    text-transform: uppercase;
+  }
+
+  /* === SOCIAL LINKS === */
+  .socials {
+    display: flex;
+    gap: 16px;
+    padding-bottom: 60px;
+    animation: fadeUp 1s 1.4s both;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 0 20px 60px;
+  }
+
+  .social-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 24px;
+    border-radius: 50px;
+    border: 1px solid rgba(106,181,114,0.25);
+    background: rgba(26,58,30,0.3);
+    color: var(--cream);
+    text-decoration: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(8px);
+  }
+
+  .social-btn:hover {
+    background: var(--sage);
+    color: var(--forest);
+    border-color: var(--sage);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(106,181,114,0.3);
+  }
+
+  .social-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  /* === FOOTER === */
+  footer {
+    padding: 30px 20px;
+    text-align: center;
+    border-top: 1px solid rgba(106,181,114,0.08);
+    width: 100%;
+  }
+
+  footer p {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: rgba(245,240,232,0.25);
+    letter-spacing: 2px;
+  }
+
+  footer em {
+    color: var(--sage);
+    font-style: normal;
+  }
+
+  /* === TICKER === */
+  .ticker-wrap {
+    width: 100%;
+    overflow: hidden;
+    padding: 14px 0;
+    background: rgba(106,181,114,0.06);
+    border-top: 1px solid rgba(106,181,114,0.1);
+    border-bottom: 1px solid rgba(106,181,114,0.1);
+    margin: 40px 0;
+  }
+
+  .ticker {
+    display: flex;
+    gap: 60px;
+    animation: tickerScroll 20s linear infinite;
+    white-space: nowrap;
+  }
+
+  .ticker span {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(106,181,114,0.5);
+  }
+
+  .ticker span.dot {
+    color: var(--gold);
+  }
+
+  @keyframes tickerScroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+</style>
+</head>
+<body>
+
+<!-- Animated Background -->
+<div class="bg-layer"></div>
+<div class="particles" id="particles"></div>
+
+<div class="site-wrapper">
+
+  <!-- HERO -->
+  <section class="hero">
+
+    <!-- Logo Mark -->
+    <div class="logo-mark">
+      <div class="logo-ring"></div>
+      <div class="logo-ring logo-ring-2"></div>
+      <div class="logo-core">
+        <svg class="logo-leaf-svg" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Leaf shape -->
+          <path d="M30 8 C50 8 56 26 50 40 C44 54 30 56 22 48 C14 40 14 24 30 8Z" fill="rgba(61,122,69,0.6)" stroke="#6ab572" stroke-width="1.5"/>
+          <path d="M30 8 C10 8 4 26 10 40 C16 54 30 56 38 48 C46 40 46 24 30 8Z" fill="rgba(61,122,69,0.3)" stroke="#6ab572" stroke-width="1" opacity="0.5"/>
+          <!-- Stem -->
+          <path d="M30 56 L30 38" stroke="#a8e0ae" stroke-width="2" stroke-linecap="round"/>
+          <!-- Veins -->
+          <path d="M30 38 C36 32 40 26 38 18" stroke="rgba(168,224,174,0.4)" stroke-width="1" stroke-linecap="round"/>
+          <path d="M30 44 C24 40 20 34 22 26" stroke="rgba(168,224,174,0.3)" stroke-width="1" stroke-linecap="round"/>
+          <!-- AI circuit dot overlay -->
+          <circle cx="30" cy="28" r="3" fill="#7eff8a" opacity="0.8"/>
+          <circle cx="40" cy="22" r="1.5" fill="#7eff8a" opacity="0.5"/>
+          <circle cx="20" cy="34" r="1.5" fill="#7eff8a" opacity="0.5"/>
+          <path d="M30 28 L40 22 M30 28 L20 34" stroke="rgba(126,255,138,0.3)" stroke-width="0.8"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Name -->
+    <div class="channel-name">
+      <span class="name-natural">Natural</span>
+      <span class="name-native">Native</span>
+    </div>
+
+    <p class="tagline">AI Education <span>✦</span> Claude Tutorials <span>✦</span> Learn Smarter</p>
+
+  </section>
+
+  <!-- TICKER -->
+  <div class="ticker-wrap">
+    <div class="ticker">
+      <span>AI Education</span><span class="dot">✦</span>
+      <span>Claude Tutorials</span><span class="dot">✦</span>
+      <span>Natural Native</span><span class="dot">✦</span>
+      <span>Learn AI Tools</span><span class="dot">✦</span>
+      <span>Instagram &amp; WhatsApp</span><span class="dot">✦</span>
+      <span>How to Use Claude</span><span class="dot">✦</span>
+      <!-- repeat -->
+      <span>AI Education</span><span class="dot">✦</span>
+      <span>Claude Tutorials</span><span class="dot">✦</span>
+      <span>Natural Native</span><span class="dot">✦</span>
+      <span>Learn AI Tools</span><span class="dot">✦</span>
+      <span>Instagram &amp; WhatsApp</span><span class="dot">✦</span>
+      <span>How to Use Claude</span><span class="dot">✦</span>
+    </div>
+  </div>
+
+  <!-- VIDEO FRAME -->
+  <div class="motion-banner">
+    <div class="video-frame">
+      <div class="video-bg">
+        <!-- Animated scan line -->
+        <div class="scan-line"></div>
+
+        <!-- Floating AI icons -->
+        <div class="float-icon" style="left:15%;bottom:20%;--fi-dur:5s;--fi-delay:0s">🤖</div>
+        <div class="float-icon" style="left:75%;bottom:15%;--fi-dur:6s;--fi-delay:1.5s">✨</div>
+        <div class="float-icon" style="left:45%;bottom:10%;--fi-dur:4.5s;--fi-delay:0.8s">🧠</div>
+        <div class="float-icon" style="left:25%;bottom:30%;--fi-dur:7s;--fi-delay:2.5s">💡</div>
+        <div class="float-icon" style="left:85%;bottom:25%;--fi-dur:5.5s;--fi-delay:3s">🌿</div>
+      </div>
+
+      <!-- REC indicator -->
+      <div class="video-label">
+        <div class="rec-dot"></div>
+        <span class="rec-text">LIVE</span>
+      </div>
+
+      <!-- Center content -->
+      <div class="video-content">
+        <div class="video-logo-mini">Natural <em>Native</em></div>
+        <div class="video-subtitle">▶ &nbsp; AI Education Channel</div>
+      </div>
+
+      <!-- Play button -->
+      <div class="play-btn" title="Subscribe"></div>
+    </div>
+  </div>
+
+  <!-- FEATURE CARDS -->
+  <div class="features">
+    <div class="card">
+      <span class="card-icon">🤖</span>
+      <div class="card-title">AI Education</div>
+      <p class="card-desc">Explore the future of artificial intelligence with hands-on, practical tutorials designed for everyone.</p>
+      <span class="card-tag">Beginner Friendly</span>
+    </div>
+    <div class="card">
+      <span class="card-icon">⚡</span>
+      <div class="card-title">How to Use Claude</div>
+      <p class="card-desc">Master Claude AI with step-by-step guides that help you get more done, faster and smarter.</p>
+      <span class="card-tag">Claude Tutorials</span>
+    </div>
+    <div class="card">
+      <span class="card-icon">🌿</span>
+      <div class="card-title">Natural Learning</div>
+      <p class="card-desc">Complex AI topics explained naturally — no jargon, just clear and organic understanding.</p>
+      <span class="card-tag">Easy to Follow</span>
+    </div>
+  </div>
+
+  <!-- SOCIAL LINKS -->
+  <div class="socials">
+    <a class="social-btn" href="https://instagram.com" target="_blank">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+        <circle cx="12" cy="12" r="4"/>
+        <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/>
+      </svg>
+      Instagram
+    </a>
+    <a class="social-btn" href="https://wa.me/" target="_blank">
+      <svg viewBox="0 0 24 24" fill="currentColor">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+      </svg>
+      WhatsApp
+    </a>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2025 <em>Natural Native</em> &nbsp;✦&nbsp; AI Education Channel</p>
+  </footer>
+
+</div>
+
+<script>
+  // Generate particles
+  const container = document.getElementById('particles');
+  for (let i = 0; i < 25; i++) {
+    const p = document.createElement('div');
+    p.cl
